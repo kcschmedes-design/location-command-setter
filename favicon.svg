@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title>Location Command Setter</title>
+  <rect width="64" height="64" rx="15" fill="#0b1220"/>
+  <path d="M32 9.5c-11.3 0-20.5 8.9-20.5 19.8 0 14.2 20.5 27.2 20.5 27.2s20.5-13 20.5-27.2C52.5 18.4 43.3 9.5 32 9.5Z" fill="#6fc7ff"/>
+  <circle cx="32" cy="29" r="8" fill="#0b1220"/>
+  <path d="M18 45.5h28" stroke="#57dfac" stroke-width="3" stroke-linecap="round"/>
+  <path d="m23 42 4 3.5-4 3.5M31 49h10" fill="none" stroke="#57dfac" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
