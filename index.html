@@ -6,79 +6,44 @@
     <meta name="theme-color" content="#0b1220" />
     <title>GetMe — iPhone-Standorte einfach setzen</title>
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="stylesheet" href="./src/style.css" />
   </head>
   <body>
     <main class="landing-shell">
       <nav class="site-nav" aria-label="Hauptnavigation">
         <a class="brand" href="#top"><span class="brand-mark">⌖</span><span>GetMe</span></a>
-        <div class="nav-links"><a href="#how-it-works">So funktioniert’s</a><a href="#app">App</a><a class="nav-cta" href="#app">App öffnen</a></div>
+        <div class="nav-links"><a href="#how-it-works">So funktioniert’s</a><a href="#download">Download</a><a class="nav-cta" href="./GetMe-Standort-macOS.dmg" download>DMG laden</a></div>
       </nav>
 
       <section class="hero" id="top" aria-labelledby="page-title">
         <div class="hero-copy">
           <p class="hero-kicker">iPhone Location Utility</p>
           <h1 id="page-title">Dein iPhone.<br><em>Jeder Ort.</em></h1>
-          <p class="hero-lede">GetMe macht Standort-Simulation auf dem Mac klar und kontrollierbar. Punkt auf der Karte wählen, iPhone verbinden, starten.</p>
-          <div class="hero-actions"><a class="primary-cta" href="#app">Standort auswählen <span>↗</span></a><a class="secondary-cta" href="#how-it-works">Mehr erfahren</a></div>
-          <p class="hero-note"><span class="live-dot"></span>Für Entwickler · macOS · kabelgebundenes iPhone</p>
+          <p class="hero-lede">GetMe macht Standort-Simulation auf dem Mac klar und kontrollierbar. Lade die App herunter, verbinde dein iPhone und wähle deinen Ort direkt in GetMe.</p>
+          <div class="hero-actions"><a class="primary-cta" href="./GetMe-Standort-macOS.dmg" download>Für macOS laden <span>↓</span></a><a class="secondary-cta" href="#how-it-works">Mehr erfahren</a></div>
+          <p class="hero-note"><span class="live-dot"></span>DMG für macOS · kabelgebundenes iPhone · lokale App</p>
         </div>
         <div class="hero-visual" aria-label="GetMe Kartenvisualisierung"><img src="./getme-map-hero.png" alt="Abstrakte Weltkarte mit markierter Route" /></div>
       </section>
 
-      <section class="trust-row" aria-label="Produktmerkmale"><span>Direkte Kartensteuerung</span><span>Lokaler USB-Tunnel</span><span>Start · Stop · Status</span></section>
+      <section class="trust-row" aria-label="Produktmerkmale"><span>GetMe für macOS</span><span>Lokale Verarbeitung</span><span>Download · Installieren · Starten</span></section>
 
       <section class="how-section" id="how-it-works" aria-labelledby="how-title">
-        <div class="section-intro"><p class="section-kicker">Ein klarer Ablauf</p><h2 id="how-title">Von der Karte<br>zum simulierten Ort.</h2></div>
-        <div class="steps"><article><span class="step-number">01</span><h3>Punkt wählen</h3><p>Klicke auf einen beliebigen Ort. Koordinaten und Command werden sofort sichtbar.</p></article><article><span class="step-number">02</span><h3>iPhone verbinden</h3><p>Per Kabel verbinden, Vertrauen bestätigen und dein Gerät in GetMe auswählen.</p></article><article><span class="step-number">03</span><h3>Simulation starten</h3><p>GetMe hält die Verbindung offen und zeigt den aktuellen Status verständlich an.</p></article></div>
+        <div class="section-intro"><p class="section-kicker">In wenigen Minuten bereit</p><h2 id="how-title">Herunterladen.<br>Verbinden. Loslegen.</h2></div>
+        <div class="steps"><article><span class="step-number">01</span><h3>DMG laden</h3><p>Lade GetMe direkt auf deinen Mac und öffne die Installationsdatei.</p></article><article><span class="step-number">02</span><h3>App installieren</h3><p>Ziehe GetMe in deinen Programme-Ordner und starte die App wie gewohnt.</p></article><article><span class="step-number">03</span><h3>iPhone verbinden</h3><p>Verbinde dein iPhone per Kabel. Die Kartensteuerung wartet in der App auf dich.</p></article></div>
       </section>
 
-      <section class="app-section" id="app" aria-labelledby="app-title">
-        <div class="intro" aria-labelledby="app-title">
-        <div>
-          <p class="eyebrow">GetMe · Developer Utility</p>
-          <h2 id="app-title">Standort auswählen</h2>
-          <p class="subtitle">Klicke auf die Karte, um einen iOS-Simulationsbefehl zu erzeugen.</p>
+      <section class="download-section" id="download" aria-labelledby="download-title">
+        <div class="download-card">
+          <div>
+            <p class="section-kicker">GetMe für macOS</p>
+            <h2 id="download-title">Dein Download<br>ist bereit.</h2>
+            <p>Die aktuelle GetMe-Version kommt als DMG-Datei für Apple Silicon und Intel Macs.</p>
+          </div>
+          <div class="download-action"><a class="primary-cta" href="./GetMe-Standort-macOS.dmg" download>GetMe-Standort-macOS.dmg <span>↓</span></a><small>macOS · DMG · lokale Installation</small></div>
         </div>
-          <div class="status-pill"><span id="status-dot" class="status-dot"></span><span id="status-text">Bereit</span></div>
-        </div>
-      <section class="workspace" aria-label="Standortauswahl">
-        <div id="map" role="application" aria-label="Interaktive Weltkarte"></div>
-        <aside class="details-panel" aria-live="polite">
-          <div class="panel-heading">
-            <div>
-              <p class="eyebrow">Ausgewählter Punkt</p>
-              <h2 id="selection-title">Noch kein Punkt</h2>
-            </div>
-            <button id="reset-button" class="icon-button" type="button" title="Auswahl zurücksetzen" aria-label="Auswahl zurücksetzen" disabled>↺</button>
-          </div>
-
-          <div class="coordinates" id="coordinates" aria-label="Koordinaten">
-            <div class="coordinate-row"><span>Breitengrad</span><strong id="latitude">—</strong></div>
-            <div class="coordinate-row"><span>Längengrad</span><strong id="longitude">—</strong></div>
-          </div>
-
-          <div class="command-section">
-            <div class="section-label"><span>Terminal Command</span><span class="format-label">bash</span></div>
-            <pre id="command-output" class="command-output" tabindex="0"><code>Wähle einen Punkt auf der Karte.</code></pre>
-            <button id="copy-button" class="copy-button" type="button" disabled>
-              <span aria-hidden="true">⧉</span> Command kopieren
-            </button>
-            <p id="copy-status" class="copy-status" role="status"></p>
-          </div>
-
-          <div class="device-section">
-            <div class="section-label"><span>Verbundenes iPhone</span><button id="refresh-devices" class="text-button" type="button">Aktualisieren</button></div>
-            <select id="device-select" aria-label="Verbundenes iPhone"><option value="">Kein Gerät gefunden</option></select>
-            <div class="device-actions"><button id="start-button" class="copy-button" type="button" disabled>Standort starten</button><button id="stop-button" class="stop-button" type="button" disabled>Stoppen</button></div>
-            <p id="device-status" class="copy-status" role="status"></p>
-          </div>
-
-          <p class="hint"><span aria-hidden="true">ⓘ</span> Die App hält den USB-Tunnel geöffnet und sendet regelmäßige Bestätigungen. Ohne verbundenes Gerät bleibt die Auswahl lokal.</p>
-        </aside>
       </section>
-      </section>
-      <footer>GetMe · Standort-Simulation für dein iPhone</footer>
+      <footer>GetMe · Standort-Simulation für dein iPhone · <a href="./GetMe-Standort-macOS.dmg" download>DMG herunterladen</a></footer>
     </main>
   </body>
-  <script type="module" src="./src/main.ts"></script>
 </html>
