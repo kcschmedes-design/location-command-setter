@@ -3,3 +3,8 @@ dist/
 .vercel/
 .DS_Store
 *.log
+macapp/.venv/
+macapp/build/
+macapp/release/
+macapp/*.spec
+__pycache__/

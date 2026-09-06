@@ -1,15 +1,13 @@
 import "./style.css";
-import type * as Leaflet from "leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import worldFallback from "./world-fallback.svg";
+import type { LatLng, LeafletMouseEvent, Marker } from "leaflet";
 
-declare global {
-  interface Window {
-    L: typeof Leaflet;
-  }
-}
+const map = L.map("map", { worldCopyJump: true, minZoom: 2 }).setView([20, 0], 2);
 
-const map = window.L.map("map", { worldCopyJump: true, minZoom: 2 }).setView([20, 0], 2);
-
-window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+L.imageOverlay(worldFallback, [[-90, -180], [90, 180]], { opacity: 1, interactive: false }).addTo(map);
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   maxZoom: 19,
   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 }).addTo(map);
@@ -21,9 +19,44 @@ const commandOutput = document.querySelector<HTMLElement>("#command-output code"
 const copyButton = document.querySelector<HTMLButtonElement>("#copy-button")!;
 const resetButton = document.querySelector<HTMLButtonElement>("#reset-button")!;
 const copyStatus = document.querySelector<HTMLElement>("#copy-status")!;
+const statusText = document.querySelector<HTMLElement>("#status-text")!;
+const statusDot = document.querySelector<HTMLElement>("#status-dot")!;
+const deviceSelect = document.querySelector<HTMLSelectElement>("#device-select")!;
+const refreshDevices = document.querySelector<HTMLButtonElement>("#refresh-devices")!;
+const startButton = document.querySelector<HTMLButtonElement>("#start-button")!;
+const stopButton = document.querySelector<HTMLButtonElement>("#stop-button")!;
+const deviceStatus = document.querySelector<HTMLElement>("#device-status")!;
 
-let marker: Leaflet.Marker | null = null;
+let marker: Marker | null = null;
 let selectedCommand = "";
+let selectedDevice = "";
+let bridgeAvailable = false;
+
+type BridgeMessage = { event: string; state?: string; message?: string; detail?: string; devices?: Array<{id: string; name: string}>; resetUncertain?: boolean };
+const bridge = (window as Window & { webkit?: { messageHandlers?: { bridge?: { postMessage: (value: unknown) => void } } } }).webkit?.messageHandlers?.bridge;
+function sendBridge(value: unknown) { bridge?.postMessage(value); }
+function setStatus(state: string, message: string) {
+  statusText.textContent = message;
+  statusDot.dataset.state = state;
+  startButton.disabled = !selectedCommand || !selectedDevice || state === "starting" || state === "active" || !bridgeAvailable;
+  stopButton.disabled = state !== "active" && state !== "starting";
+}
+function renderDevices(devices: Array<{id:string; name:string}>) {
+  deviceSelect.replaceChildren();
+  if (!devices.length) { deviceSelect.add(new Option("Kein Gerät gefunden", "")); selectedDevice = ""; }
+  devices.forEach((device) => deviceSelect.add(new Option(device.name, device.id)));
+  selectedDevice = deviceSelect.value;
+  startButton.disabled = !selectedCommand || !selectedDevice || !bridgeAvailable;
+}
+
+window.addEventListener("message", (event: MessageEvent<BridgeMessage>) => {
+  const msg = event.data;
+  if (!msg) return;
+  if (msg.event === "bridgeReady") { bridgeAvailable = true; setStatus("idle", "Bereit · iPhone anschließen"); sendBridge({cmd: "devices"}); }
+  if (msg.event === "devices") renderDevices(msg.devices ?? []);
+  if (msg.event === "status") setStatus(msg.state ?? "idle", msg.message ?? "");
+  if (msg.event === "requestError") { deviceStatus.textContent = msg.message ?? "Fehler"; setStatus("error", "Fehler"); }
+});
 
 function formatCoordinate(value: number): string {
   return value.toFixed(6);
@@ -38,13 +71,13 @@ function buildCommand(lat: string, lon: string): string {
   ].join("\n");
 }
 
-function selectLocation(point: Leaflet.LatLng): void {
+function selectLocation(point: LatLng): void {
   const lat = formatCoordinate(point.lat);
   const lon = formatCoordinate(point.lng);
   selectedCommand = buildCommand(lat, lon);
 
   if (marker) marker.setLatLng(point);
-  else marker = window.L.marker(point).addTo(map);
+  else marker = L.marker(point).addTo(map);
 
   selectionTitle.textContent = "Punkt ausgewählt";
   latitude.textContent = `${lat}°`;
@@ -53,6 +86,7 @@ function selectLocation(point: Leaflet.LatLng): void {
   copyButton.disabled = false;
   resetButton.disabled = false;
   copyStatus.textContent = "";
+  startButton.disabled = !selectedDevice || !bridgeAvailable;
 }
 
 function resetSelection(): void {
@@ -70,8 +104,12 @@ function resetSelection(): void {
   copyStatus.textContent = "";
 }
 
-map.on("click", (event: Leaflet.LeafletMouseEvent) => selectLocation(event.latlng));
+map.on("click", (event: LeafletMouseEvent) => selectLocation(event.latlng));
 resetButton.addEventListener("click", resetSelection);
+deviceSelect.addEventListener("change", () => { selectedDevice = deviceSelect.value; startButton.disabled = !selectedCommand || !selectedDevice || !bridgeAvailable; });
+refreshDevices.addEventListener("click", () => sendBridge({cmd: "devices"}));
+startButton.addEventListener("click", () => { if (selectedCommand && selectedDevice) sendBridge({cmd: "start", udid: selectedDevice, lat: Number(latitude.textContent?.replace("°", "")), lon: Number(longitude.textContent?.replace("°", ""))}); });
+stopButton.addEventListener("click", () => sendBridge({cmd: "stop"}));
 
 copyButton.addEventListener("click", async () => {
   if (!selectedCommand) return;
